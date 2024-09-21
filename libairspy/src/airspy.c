@@ -753,6 +753,13 @@ static void airspy_open_device(airspy_device_t* device,
 		return;
 	}
 
+	/* Windows: Use RAW_IO to improve throughput */
+//#if LIBUSB_API_VERSION >= 0x0100010B
+	if(libusb_endpoint_supports_raw_io(dev_handle, LIBUSB_ENDPOINT_IN | 1) == 1) {
+		libusb_endpoint_set_raw_io(dev_handle, LIBUSB_ENDPOINT_IN | 1, 1);
+	}
+//#endif
+
 	*ret = AIRSPY_SUCCESS;
 	return;
 }
